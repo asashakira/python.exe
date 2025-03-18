@@ -26,6 +26,12 @@ jobs:
       - name: Build EXE
         run: poetry run pyinstaller --onefile --noconsole main.py
 
+      - name: ls command
+        run: |
+          ls -a
+          ls dist/
+          ls build/
+
       - name: Upload EXE as Artifact
         uses: actions/upload-artifact@v3
         with:
