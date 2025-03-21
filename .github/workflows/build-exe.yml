@@ -24,7 +24,7 @@ jobs:
         run: poetry install --no-interaction --no-root
 
       - name: Build EXE
-        run: poetry run pyinstaller --onefile main.py
+        run: poetry run pyinstaller --onefile pythonexe/main.py
 
       - name: Upload EXE as Artifact
         uses: actions/upload-artifact@v4
