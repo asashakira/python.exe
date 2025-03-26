@@ -34,7 +34,7 @@ jobs:
       run: poetry install --no-interaction --no-root
 
     - name: Build EXE
-      run: poetry run pyinstaller --onefile --name ${{ env.PACKAGE_NAME }} ebsco_converter/main.py
+      run: poetry run pyinstaller --onefile --name ${{ env.PACKAGE_NAME }} pythonexe/main.py
 
     - name: Upload EXE as Artifact
       uses: actions/upload-artifact@v4
