@@ -1,13 +1,16 @@
 name: Build and Release Windows EXE
 
-on: 
+on:
   push:
     tags:
-      - 'v*'
+    - v*
 
 permissions:
   contents: write
   actions: write
+
+env:
+  PACKAGE_NAME: ebsco-converter
 
 jobs:
   build:
@@ -31,13 +34,13 @@ jobs:
       run: poetry install --no-interaction --no-root
 
     - name: Build EXE
-      run: poetry run pyinstaller --onefile --name pythonexe pythonexe/main.py
+      run: poetry run pyinstaller --onefile --name ${{ env.PACKAGE_NAME }} ebsco_converter/main.py
 
     - name: Upload EXE as Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: pythonexe
-        path: dist/pythonexe.exe
+        name: ${{ env.PACKAGE_NAME }}
+        path: dist/${{ env.PACKAGE_NAME }}.exe
 
   release:
     needs: build
@@ -49,7 +52,7 @@ jobs:
     - name: Download EXE artifact
       uses: actions/download-artifact@v4
       with:
-        name: pythonexe
+        name: ${{ env.PACKAGE_NAME }}
         path: dist/
 
     - name: Create Release
@@ -57,5 +60,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh release create ${{ github.ref_name }} \
-        dist/pythonexe.exe \
+        dist/${{ env.PACKAGE_NAME }}.exe \
         --title "Release ${{ github.ref_name }}"
