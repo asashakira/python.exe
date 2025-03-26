@@ -49,15 +49,10 @@ jobs:
         path: dist/
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        files: dist/pythonexe.exe
-        tag_name: ${{ github.ref_name }}
-        name: Release ${{ github.ref_name }}
-        body: |
-          🎉 New release: ${{ github.ref_name }}!
-          - Windows EXE build included.
-        draft: false
-        prerelease: false
+      run: |
+        gh release create ${{ github.ref_name }} \
+        dist/pythonexe.exe \
+        --title "Release ${{ github.ref_name }}" \
+        --notes "Release notes for ${{ github.ref_name }}"
