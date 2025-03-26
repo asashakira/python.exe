@@ -1,0 +1,63 @@
+name: Build and Release Windows EXE
+
+on: 
+  push:
+    tags:
+      - 'v*'  # Trigger only on version tags (e.g., v1.0.0)
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.13
+
+    - name: Set up Poetry
+      uses: abatilo/actions-poetry@v3
+      with:
+        poetry-version: 2.1.1
+
+    - name: Install dependencies
+      run: poetry install --no-interaction --no-root
+
+    - name: Build EXE
+      run: poetry run pyinstaller --onefile --name pythonexe pythonexe/main.py
+
+    - name: Upload EXE as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: pythonexe
+        path: dist/pythonexe.exe
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download EXE artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: pythonexe
+        path: dist/
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: dist/pythonexe.exe
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
+        body: |
+          🎉 New release: ${{ github.ref_name }}!
+          - Windows EXE build included.
+        draft: false
+        prerelease: false
