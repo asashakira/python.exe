@@ -1,5 +1,7 @@
-import yaml
 from pathlib import Path
+
+import yaml
+
 
 def read_config(file_path: str) -> dict[str, str | None] | None:
     """Read configs from a YAML file."""
@@ -23,9 +25,11 @@ def read_config(file_path: str) -> dict[str, str | None] | None:
         print("Error parsing YAML")
         return None
 
+
 def main():
     config = read_config("config.yaml")
     print(config)
+
 
 if __name__ == "__main__":
     main()
